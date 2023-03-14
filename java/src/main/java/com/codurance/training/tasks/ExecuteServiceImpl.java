@@ -11,7 +11,10 @@ public class ExecuteServiceImpl implements ExecuteService{
     private final ShowService showService;
     private final ErrorService errorService;
     private final DeleteService deleteService;
-    private final ViewService viewService;
+    private final ViewByDateService viewByDateService;
+    private final ViewByDeadlineService viewByDeadlineService;
+    private final ViewByProjectService viewByProjectService;
+    private final ViewDueTasksService viewDueTasksService;
     Map<String, List<Task>> tasks;
     PrintWriter out;
 
@@ -22,7 +25,10 @@ public class ExecuteServiceImpl implements ExecuteService{
         this.showService = new ShowService(out, tasks);
         this.errorService = new ErrorServiceImpl(out);
         this.deleteService = new DeleteServiceImpl(out,tasks);
-        this.viewService = new ViewServiceImpl(out,tasks);
+        this.viewByDateService = new ViewByDateService(out, tasks);
+        this.viewByDeadlineService = new ViewByDeadlineService(out, tasks);
+        this.viewByProjectService = new ViewByProjectService(out, tasks);
+        this.viewDueTasksService = new ViewDueTasksService(out, tasks);
     }
 
     @Override
@@ -52,19 +58,19 @@ public class ExecuteServiceImpl implements ExecuteService{
                 addService.addDeadline(Long.parseLong(commandRest[0]), commandRest[1]);
                 break;
             case "today":
-                viewService.viewDueTasks();
+                viewDueTasksService.view();
                 break;
             case "view":
                 String viewBy = commandRest[1];
                 switch (viewBy) {
                     case "by date":
-                        viewService.viewByDate();
+                        viewByDateService.view();
                         break;
                     case "by deadline":
-                        viewService.viewByDeadline();
+                        viewByDeadlineService.view();
                         break;
                     case "by project":
-                        viewService.viewByProject();
+                        viewByProjectService.view();
                         break;
                     default:
                         errorService.error(command);
